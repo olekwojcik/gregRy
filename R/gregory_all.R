@@ -177,7 +177,7 @@ gregory_all <- function(
   
   #now combine with betas
   
-  term_df <- left_join(weighted_beta_df, N_df, by = c(estimation, "variable"))
+  term_df <- dplyr::left_join(weighted_beta_df, N_df, by = c(estimation, "variable"))
   
   #now let's get the N means
   
@@ -190,7 +190,7 @@ gregory_all <- function(
   
   #then join N to the term_df
   
-  term_df <- left_join(term_df, n_df, by = c(estimation, "variable"))
+  term_df <- dplyr::left_join(term_df, n_df, by = c(estimation, "variable"))
   
   #replace na's from join (intercept) with 1's
   
@@ -198,13 +198,13 @@ gregory_all <- function(
   term_df$mean_N[is.na(term_df$mean_N)] <- 1
   
   term_df <- term_df %>%
-    mutate(term_n = weighted_beta * mean_n,
-           term_N = weighted_beta * mean_N) %>%
-    group_by(.data[[estimation]]) %>%
-    summarize(term_n = sum(term_n),
-              term_N = sum(term_N), .groups = 'drop') %>%
-    mutate(term = term_N - term_n) %>%
-    select(fips, term)
+    dplyr::mutate(term_n = weighted_beta * mean_n,
+                  term_N = weighted_beta * mean_N) %>%
+    dplyr::group_by(.data[[estimation]]) %>%
+    dplyr::summarize(term_n = sum(term_n),
+                     term_N = sum(term_N), .groups = 'drop') %>%
+    dplyr::mutate(term = term_N - term_n) %>%
+    dplyr::select(fips, term)
   
   #get Y var
   
@@ -214,11 +214,11 @@ gregory_all <- function(
   
   y_bar_df <- plot_df %>%
     dplyr::group_by(.data[[estimation]]) %>%
-    summarize(y_bar = mean(.data[[y]]), .groups = 'drop')
+    dplyr::summarize(y_bar = mean(.data[[y]]), .groups = 'drop')
   
   #join with the rest and get the final result
   
-  result <- left_join(term_df, y_bar_df, by = estimation) %>%
+  result <- dplyr::left_join(term_df, y_bar_df, by = estimation) %>%
     dplyr::mutate(estimate = y_bar + term) %>%
     dplyr::select(.data[[estimation]], estimate)
   
