@@ -9,8 +9,10 @@
 #' @param formula auauahhuuyyuuu
 #' @param prop huuuyyyyyyyeeeeeuuurrrgh
 #' @keywords forest
+#' @importFrom magrittr %>%
 #' @export
 
+  
 gregory_all <- function(
   plot_df, #all plot data (totaldata)
   resolution, #character, name of resolution in dfs
@@ -131,7 +133,7 @@ gregory_all <- function(
         dplyr::filter(.data[[resolution]] == period_two)
       
       
-      model <- lm(formula,
+      model <- stats::lm(formula,
                   data = x_sample_filtered)
       
       result <- data.frame(resolution = .,
