@@ -25,6 +25,7 @@ The goal of `gregRy` is to make the GREGORY estimator easily available to use.
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 library(tidyverse)
 library(pdxTrees)
+library(ggplot2)
 ```
 
 ## Installation
@@ -96,20 +97,20 @@ To use GREGORY, we need 3 different datasets.
 
 The first dataset is the overall data:
 
-```{r}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 print(head(dat))
 ```
 
 The second dataset is the means of the predictors at the estimation level (Family estimates):
 
-```{r}
-print(head(dat_x_bar_new))
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+print(head(as.data.frame(dat_x_bar_new)))
 ```
 
 The third dataset is contains both the resolution and estimation, with the proportion of resolution in the given estimation unit:
 
-```{r}
-print(head(dat_prop))
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+print(head(as.data.frame(dat_prop)))
 ```
 
 ```{r, warning=FALSE, message=FALSE,}
@@ -124,7 +125,10 @@ x1 <- gregory_all(plot_df = dat %>% drop_na(),
 ```
 
 ```{r, warning=FALSE, message=FALSE}
-hist(x1$estimate, main = "GREGORY estimates of Tree Height using Crown Width as a Predictor", xlab = "Estimate")
+ggplot(x1, aes(x=estimate)) + 
+  geom_histogram(color="black", fill="white") + 
+  xlim("Estimate") + 
+  labs(title = "GREGORY Estimates of Tree Height using Crown Width")
 ```
 
 ### GREG
