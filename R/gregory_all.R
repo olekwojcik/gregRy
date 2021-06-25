@@ -206,7 +206,7 @@ gregory_all <- function(
     dplyr::summarize(term_n = sum(term_n),
                      term_N = sum(term_N), .groups = 'drop') %>%
     dplyr::mutate(term = term_N - term_n) %>%
-    dplyr::select(fips, term)
+    dplyr::select(.data[[estimation]], term)
   
   #get Y var
   
