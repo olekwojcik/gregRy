@@ -15,21 +15,21 @@ gregory_all(
 )
 }
 \arguments{
-\item{plot_df}{blah}
+\item{plot_df}{A data frame containing the response variable, predictors, estimation unit, and resolution unit for each "plot"}
 
-\item{resolution}{nlahh}
+\item{resolution}{A character specifying the resolution column name within the other dataframes}
 
-\item{estimation}{Nhahuahuauh}
+\item{estimation}{A character specifying the estimation column name within the other dataframes}
 
-\item{pixel_estimation_means}{uuurrrfgfghh}
+\item{pixel_estimation_means}{A dataframe with a column for the estimation unit and a column for the mean response variable value per that estimation unit}
 
-\item{proportions}{oooouuuuhhhh}
+\item{proportions}{A dataframe with three columns: one for resolution, one for estimation, and one for the proportion of a resolution area found in each estimation area}
 
-\item{formula}{auauahhuuyyuuu}
+\item{formula}{Formula to be used for the model, names should be consistent with the column names in plot_df and pixel_estimation_means}
 
-\item{prop}{huuuyyyyyyyeeeeeuuurrrgh}
+\item{prop}{A character specifying the column name of the proportion found in proportions}
 }
 \description{
-This runs gregory yay
+This function runs the Generalized Regression Operating on Resolutions of Y estimator, also know as GREGORY, on a set of data.
 }
 \keyword{forest}
