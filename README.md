@@ -3,7 +3,7 @@
 
 <!-- You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.  -->
 
-# Insert Package Name
+# gregRy
 
 <!-- badges: start -->
 
@@ -73,22 +73,50 @@ dat_x_means <- get_pdxTrees_parks() %>%
   drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
   dplyr::summarize(DBH = mean(DBH), Crown_Width_NS = mean(Crown_Width_NS),
             Tree_Height = mean(Tree_Height))
+
 dat_x_bar_new <- dat_x_bar %>%
   filter(variable == "Crown_Width_NS") %>%
   mutate(Crown_Width_NS = mean) %>%
   select(Family, Crown_Width_NS)
 ```
 
+To use GREGORY, we need 3 different datasets.
+
+The first dataset is the overall data:
+
 ``` r
-hist(x1$estimate, title = "GREGORY estimates of Tree Height using Crown Width as a Predictor")
-#> Warning in plot.window(xlim, ylim, "", ...): "title" is not a graphical
-#> parameter
-#> Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...): "title"
-#> is not a graphical parameter
-#> Warning in axis(1, ...): "title" is not a graphical parameter
-#> Warning in axis(2, ...): "title" is not a graphical parameter
+view(dat)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+The second dataset is the means of the predictors at the estimation
+level (Family estimates):
+
+``` r
+view(dat_x_bar_new)
+```
+
+The third dataset is contains both the resolution and estimation, with
+the proportion of resolution in the given estimation unit:
+
+``` r
+view(dat_prop)
+```
+
+``` r
+# Create GREGORY estimates
+x1 <- gregory_all(plot_df = dat %>% drop_na(),
+            resolution = "Condition",
+            estimation = "Family",
+            pixel_estimation_means = dat_x_bar_new,
+            proportions = dat_prop,
+            formula = Tree_Height ~ Crown_Width_NS,
+            prop = "prop")
+```
+
+``` r
+hist(x1$estimate, title = "GREGORY estimates of Tree Height using Crown Width as a Predictor", xlab = "Estimate")
+```
+
+<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
 
 ### GREG
