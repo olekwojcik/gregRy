@@ -151,7 +151,7 @@ gregory_all <- function(
   #now let's get those predictors
   
   predictors <- betas  %>%
-    dplyr::select(tidyselect::all_of(variable)) %>%
+    dplyr::select(tidyselect::variable) %>%
     dplyr::pull() %>%
     unique()
   
@@ -163,7 +163,7 @@ gregory_all <- function(
     dplyr::mutate(weighted_beta = beta * .data[[prop]]) %>%
     dplyr::select(.data[[estimation]],
                   .data[[resolution]],
-                  tidyselect::all_of(variable),
+                  variable,
                   weighted_beta)
   
   
