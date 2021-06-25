@@ -9,7 +9,7 @@
 #' @param formula auauahhuuyyuuu
 #' @param prop huuuyyyyyyyeeeeeuuurrrgh
 #' @keywords forest
-#' @importFrom magrittr %>%
+#' @import magrittr
 #' @export
 
   
