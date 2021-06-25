@@ -122,6 +122,7 @@ x1 <- gregory_all(plot_df = dat %>% drop_na(),
             proportions = dat_prop,
             formula = Tree_Height ~ Crown_Width_NS,
             prop = "prop")
+print(x1)
 ```
 
 ```{r, warning=FALSE, message=FALSE}

@@ -123,6 +123,21 @@ x1 <- gregory_all(plot_df = dat %>% drop_na(),
             proportions = dat_prop,
             formula = Tree_Height ~ Crown_Width_NS,
             prop = "prop")
+print(x1)
+#> # A tibble: 51 x 2
+#>    Family         estimate
+#>    <chr>             <dbl>
+#>  1 Adoxaceae          30  
+#>  2 Altingiaceae       67.5
+#>  3 Anacardiaceae      19.2
+#>  4 Aquifoliaceae      24.5
+#>  5 Araliaceae         10  
+#>  6 Arecaceae          22  
+#>  7 Betulaceae         44.5
+#>  8 Bignoniaceae       45.5
+#>  9 Cannabaceae        39.4
+#> 10 Caprifoliaceae     19  
+#> # ... with 41 more rows
 ```
 
 ``` r
