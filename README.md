@@ -150,3 +150,35 @@ ggplot(x1, aes(x=estimate)) +
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
 
 ### GREG
+
+``` r
+# Create GREG estimates
+x2 <- greg_all(plot_df = dat %>% drop_na(),
+         estimation = "Family",
+         pixel_estimation_means = dat_x_bar_new,
+         formula = Tree_Height ~ Crown_Width_NS)
+print(x2)
+#> # A tibble: 51 x 2
+#>    Family         estimate
+#>    <chr>             <dbl>
+#>  1 Adoxaceae          30  
+#>  2 Altingiaceae       67.5
+#>  3 Anacardiaceae      19.2
+#>  4 Aquifoliaceae      24.5
+#>  5 Araliaceae         10  
+#>  6 Arecaceae          22  
+#>  7 Betulaceae         44.5
+#>  8 Bignoniaceae       45.5
+#>  9 Cannabaceae        39.4
+#> 10 Caprifoliaceae     19  
+#> # ... with 41 more rows
+```
+
+``` r
+ggplot(x2, aes(x=estimate)) + 
+  geom_histogram(color="black", fill="white") + 
+  xlim("Estimate") + 
+  labs(title = "GREG Estimates of Tree Height using Crown Width")
+```
+
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />

@@ -113,7 +113,7 @@ The third dataset is contains both the resolution and estimation, with the propo
 print(head(as.data.frame(dat_prop)))
 ```
 
-```{r, warning=FALSE, message=FALSE,}
+```{r, warning=FALSE, message=FALSE}
 # Create GREGORY estimates
 x1 <- gregory_all(plot_df = dat %>% drop_na(),
             resolution = "Condition",
@@ -134,4 +134,18 @@ ggplot(x1, aes(x=estimate)) +
 
 ### GREG
 
+```{r, warning=FALSE, message=FALSE}
+# Create GREG estimates
+x2 <- greg_all(plot_df = dat %>% drop_na(),
+         estimation = "Family",
+         pixel_estimation_means = dat_x_bar_new,
+         formula = Tree_Height ~ Crown_Width_NS)
+print(x2)
+```
 
+```{r, warning=FALSE, message=FALSE}
+ggplot(x2, aes(x=estimate)) + 
+  geom_histogram(color="black", fill="white") + 
+  xlim("Estimate") + 
+  labs(title = "GREG Estimates of Tree Height using Crown Width")
+```
