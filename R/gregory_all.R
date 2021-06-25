@@ -151,7 +151,7 @@ gregory_all <- function(
   #now let's get those predictors
   
   predictors <- betas  %>%
-    dplyr::select(tidyselect::variable) %>%
+    dplyr::select(variable) %>%
     dplyr::pull() %>%
     unique()
   
