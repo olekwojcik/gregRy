@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 The goal of `gregRy` is to make the GREGORY estimator easily available to use. 
 
-```{r, message=FALSE, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 library(tidyverse)
 library(pdxTrees)
 ```
@@ -36,30 +36,29 @@ The development version of `gregRy` is available from [GitHub](https://github.co
 devtools::install_github("olekwojcik/gregRy")
 ```
 
-## About the data
-
-The package `gregRy` does not contain a dataset, which is why our example utilizes the package [pdxTrees]()
-
 ## Example Computations
+
+The package `gregRy` does not contain a dataset, which is why our example utilizes the package [pdxTrees](https://github.com/mcconvil/pdxTrees)
 
 ### GREGORY
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE}
 library(gregRy)
 #load and wrangle data
+
+# Overall dataset to create estimates with
+# Includes response variable and predictors
+
 dat <- get_pdxTrees_parks() %>%
   as.data.frame() %>%
   drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
   filter(Condition != "Dead") %>%
   select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family)
-dat_s <- dat %>%
-  sample_n(1000) %>%
-  as.data.frame()
-# dat <- dat %>%
-#   select(-Tree_Height)
+
 dat_est <- dat %>%
   filter(Family == "Pinaceae")
 predictors <- c("Crown_Width_NS", "DBH")
+
 dat_x_bar <- dat %>%
   dplyr::group_by(Family) %>%
   dplyr::summarize(dplyr::across(predictors,
@@ -70,11 +69,17 @@ dat_x_bar <- dat %>%
 dat_count_est <- dat %>%
   group_by(Family) %>%
   summarize(count = n())
+
+# Create dataset of proportions using estimation and resolution
+
 dat_prop <- left_join(dat, dat_count_est, by = "Family") %>%
   group_by(Condition, Family) %>%
   summarize(prop = n()/count) %>%
   distinct() %>%
   ungroup()
+
+# Create dataset of means of 'pixel' data
+
 dat_x_means <- get_pdxTrees_parks() %>%
   as.data.frame() %>%
   drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
@@ -86,14 +91,19 @@ dat_x_bar_new <- dat_x_bar %>%
   select(Family, Crown_Width_NS)
 ```
 
-```{r}
-gregory_all(plot_df = dat %>% drop_na(),
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+# Create GREGORY estimates
+x1 <- gregory_all(plot_df = dat %>% drop_na(),
             resolution = "Condition",
             estimation = "Family",
             pixel_estimation_means = dat_x_bar_new,
             proportions = dat_prop,
             formula = Tree_Height ~ Crown_Width_NS,
             prop = "prop")
+```
+
+```{r}
+hist(x1$estimate, title = "GREGORY estimates of Tree Height using Crown Width as a Predictor")
 ```
 
 ### GREG

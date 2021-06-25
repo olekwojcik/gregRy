@@ -12,8 +12,6 @@
 The goal of `gregRy` is to make the GREGORY estimator easily available
 to use.
 
-    #> Warning: package 'pdxTrees' was built under R version 4.0.5
-
 ## Installation
 
 The development version of `gregRy` is available from
@@ -24,52 +22,73 @@ The development version of `gregRy` is available from
 devtools::install_github("olekwojcik/gregRy")
 ```
 
-## About the data
+## Example Computations
 
 The package `gregRy` does not contain a dataset, which is why our
-example utilizes the package [pdxTrees]()
-
-## Example Computations
+example utilizes the package
+[pdxTrees](https://github.com/mcconvil/pdxTrees)
 
 ### GREGORY
 
-    #> Note: Using an external vector in selections is ambiguous.
-    #> i Use `all_of(predictors)` instead of `predictors` to silence this message.
-    #> i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
-    #> This message is displayed once per session.
-    #> `summarise()` ungrouping output (override with `.groups` argument)
-    #> `summarise()` ungrouping output (override with `.groups` argument)
-    #> `summarise()` regrouping output by 'Condition', 'Family' (override with `.groups` argument)
+``` r
+library(gregRy)
+#load and wrangle data
+
+# Overall dataset to create estimates with
+# Includes response variable and predictors
+
+dat <- get_pdxTrees_parks() %>%
+  as.data.frame() %>%
+  drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
+  filter(Condition != "Dead") %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family)
+
+dat_est <- dat %>%
+  filter(Family == "Pinaceae")
+predictors <- c("Crown_Width_NS", "DBH")
+
+dat_x_bar <- dat %>%
+  dplyr::group_by(Family) %>%
+  dplyr::summarize(dplyr::across(predictors,
+                                mean)) %>%
+  tidyr::pivot_longer(!Family,
+                            names_to = "variable",
+                            values_to = "mean")
+dat_count_est <- dat %>%
+  group_by(Family) %>%
+  summarize(count = n())
+
+# Create dataset of proportions using estimation and resolution
+
+dat_prop <- left_join(dat, dat_count_est, by = "Family") %>%
+  group_by(Condition, Family) %>%
+  summarize(prop = n()/count) %>%
+  distinct() %>%
+  ungroup()
+
+# Create dataset of means of 'pixel' data
+
+dat_x_means <- get_pdxTrees_parks() %>%
+  as.data.frame() %>%
+  drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
+  dplyr::summarize(DBH = mean(DBH), Crown_Width_NS = mean(Crown_Width_NS),
+            Tree_Height = mean(Tree_Height))
+dat_x_bar_new <- dat_x_bar %>%
+  filter(variable == "Crown_Width_NS") %>%
+  mutate(Crown_Width_NS = mean) %>%
+  select(Family, Crown_Width_NS)
+```
 
 ``` r
-gregory_all(plot_df = dat %>% drop_na(),
-            resolution = "Condition",
-            estimation = "Family",
-            pixel_estimation_means = dat_x_bar_new,
-            proportions = dat_prop,
-            formula = Tree_Height ~ Crown_Width_NS,
-            prop = "prop")
-#> Warning: `...` is not empty.
-#> 
-#> We detected these problematic arguments:
-#> * `needs_dots`
-#> 
-#> These dots only exist to allow future extensions and should be empty.
-#> Did you misspecify an argument?
-#> # A tibble: 51 x 2
-#>    Family         estimate
-#>    <chr>             <dbl>
-#>  1 Adoxaceae          30  
-#>  2 Altingiaceae       67.5
-#>  3 Anacardiaceae      19.2
-#>  4 Aquifoliaceae      24.5
-#>  5 Araliaceae         10  
-#>  6 Arecaceae          22  
-#>  7 Betulaceae         44.5
-#>  8 Bignoniaceae       45.5
-#>  9 Cannabaceae        39.4
-#> 10 Caprifoliaceae     19  
-#> # ... with 41 more rows
+hist(x1$estimate, title = "GREGORY estimates of Tree Height using Crown Width as a Predictor")
+#> Warning in plot.window(xlim, ylim, "", ...): "title" is not a graphical
+#> parameter
+#> Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...): "title"
+#> is not a graphical parameter
+#> Warning in axis(1, ...): "title" is not a graphical parameter
+#> Warning in axis(2, ...): "title" is not a graphical parameter
 ```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 ### GREG
