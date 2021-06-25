@@ -85,21 +85,60 @@ To use GREGORY, we need 3 different datasets.
 The first dataset is the overall data:
 
 ``` r
-view(dat)
+print(head(dat))
+#>   UserID Tree_Height Crown_Width_NS  DBH Condition   Family
+#> 1      1         105             44 37.4      Fair Pinaceae
+#> 2      2          94             49 32.5      Fair Pinaceae
+#> 3      3          23             28  9.7      Fair Rosaceae
+#> 4      4          28             38 10.3      Poor Fagaceae
+#> 5      5         102             43 33.2      Fair Pinaceae
+#> 6      6          95             35 32.1      Fair Pinaceae
 ```
 
 The second dataset is the means of the predictors at the estimation
 level (Family estimates):
 
 ``` r
-view(dat_x_bar_new)
+print(head(dat_x_bar_new))
+#> Warning: `...` is not empty.
+#> 
+#> We detected these problematic arguments:
+#> * `needs_dots`
+#> 
+#> These dots only exist to allow future extensions and should be empty.
+#> Did you misspecify an argument?
+#> # A tibble: 6 x 2
+#>   Family        Crown_Width_NS
+#>   <chr>                  <dbl>
+#> 1 Adoxaceae              20   
+#> 2 Altingiaceae           40.6 
+#> 3 Anacardiaceae          19.2 
+#> 4 Aquifoliaceae          14.9 
+#> 5 Araliaceae              9   
+#> 6 Arecaceae               9.67
 ```
 
 The third dataset is contains both the resolution and estimation, with
 the proportion of resolution in the given estimation unit:
 
 ``` r
-view(dat_prop)
+print(head(dat_prop))
+#> Warning: `...` is not empty.
+#> 
+#> We detected these problematic arguments:
+#> * `needs_dots`
+#> 
+#> These dots only exist to allow future extensions and should be empty.
+#> Did you misspecify an argument?
+#> # A tibble: 6 x 3
+#>   Condition Family         prop
+#>   <chr>     <chr>         <dbl>
+#> 1 Fair      Adoxaceae     1    
+#> 2 Fair      Altingiaceae  0.907
+#> 3 Fair      Anacardiaceae 0.75 
+#> 4 Fair      Aquifoliaceae 0.875
+#> 5 Fair      Araliaceae    1    
+#> 6 Fair      Arecaceae     1
 ```
 
 ``` r
@@ -114,7 +153,7 @@ x1 <- gregory_all(plot_df = dat %>% drop_na(),
 ```
 
 ``` r
-hist(x1$estimate, title = "GREGORY estimates of Tree Height using Crown Width as a Predictor", xlab = "Estimate")
+hist(x1$estimate, main = "GREGORY estimates of Tree Height using Crown Width as a Predictor", xlab = "Estimate")
 ```
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />

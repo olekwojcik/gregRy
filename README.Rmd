@@ -97,19 +97,19 @@ To use GREGORY, we need 3 different datasets.
 The first dataset is the overall data:
 
 ```{r}
-view(dat)
+print(head(dat))
 ```
 
 The second dataset is the means of the predictors at the estimation level (Family estimates):
 
 ```{r}
-view(dat_x_bar_new)
+print(head(dat_x_bar_new))
 ```
 
 The third dataset is contains both the resolution and estimation, with the proportion of resolution in the given estimation unit:
 
 ```{r}
-view(dat_prop)
+print(head(dat_prop))
 ```
 
 ```{r, warning=FALSE, message=FALSE,}
@@ -124,7 +124,7 @@ x1 <- gregory_all(plot_df = dat %>% drop_na(),
 ```
 
 ```{r, warning=FALSE, message=FALSE}
-hist(x1$estimate, title = "GREGORY estimates of Tree Height using Crown Width as a Predictor", xlab = "Estimate")
+hist(x1$estimate, main = "GREGORY estimates of Tree Height using Crown Width as a Predictor", xlab = "Estimate")
 ```
 
 ### GREG
