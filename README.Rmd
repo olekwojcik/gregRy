@@ -45,16 +45,41 @@ The package `gregRy` does not contain a dataset, which is why our example utiliz
 
 ```{r, warning=FALSE, message=FALSE}
 library(gregRy)
-#load and wrangle data
+set.seed(13)
+# load and wrangle data
 
 # Overall dataset to create estimates with
 # Includes response variable and predictors
+
+# Filter data so there's no NA values for GREG/GREGORY
+family_filter_data <- get_pdxTrees_parks() %>%
+  as.data.frame() %>%
+  drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
+  filter(Condition != "Dead") %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>%
+  group_by(Family) %>%
+  summarize(count = n())
 
 dat <- get_pdxTrees_parks() %>%
   as.data.frame() %>%
   drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
   filter(Condition != "Dead") %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>% 
+  left_join(family_filter_data, by = "Family") %>%
+  filter(count > 4) %>%
   select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family)
+
+dat_s <- get_pdxTrees_parks() %>%
+  as.data.frame() %>%
+  drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
+  filter(Condition != "Dead") %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>%
+  left_join(family_filter_data, by = "Family") %>%
+  filter(count > 4) %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>%
+  group_by(Family) %>%
+  slice_sample(prop = 0.25) %>%
+  ungroup()
 
 dat_est <- dat %>%
   filter(Family == "Pinaceae")
@@ -113,9 +138,9 @@ The third dataset is contains both the resolution and estimation, with the propo
 print(head(as.data.frame(dat_prop)))
 ```
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # Create GREGORY estimates
-x1 <- gregory_all(plot_df = dat %>% drop_na(),
+x1 <- gregory_all(plot_df = dat_s %>% drop_na(),
             resolution = "Condition",
             estimation = "Family",
             pixel_estimation_means = dat_x_bar_new,
@@ -125,27 +150,31 @@ x1 <- gregory_all(plot_df = dat %>% drop_na(),
 print(x1)
 ```
 
-```{r, warning=FALSE, message=FALSE}
-ggplot(x1, aes(x=estimate)) + 
-  geom_histogram(color="black", fill="white") + 
-  xlim("Estimate") + 
-  labs(title = "GREGORY Estimates of Tree Height using Crown Width")
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(data = x1, aes(y = estimate, x=Family)) +
+  geom_col(fill="steel blue") + 
+  labs(title = "GREGORY Estimates of Tree Height using Crown Width", x = "Tree Family", y="Estimate") + 
+  coord_flip() + 
+  theme_minimal() +
+  theme(axis.text.y = element_text(size=8))
 ```
 
 ### GREG
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # Create GREG estimates
-x2 <- greg_all(plot_df = dat %>% drop_na(),
+x2 <- greg_all(plot_df = dat_s %>% drop_na(),
          estimation = "Family",
          pixel_estimation_means = dat_x_bar_new,
          formula = Tree_Height ~ Crown_Width_NS)
 print(x2)
 ```
 
-```{r, warning=FALSE, message=FALSE}
-ggplot(x2, aes(x=estimate)) + 
-  geom_histogram(color="black", fill="white") + 
-  xlim("Estimate") + 
-  labs(title = "GREG Estimates of Tree Height using Crown Width")
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(x2, aes(y = estimate, x=Family)) + 
+  geom_col(fill="steel blue") +
+  labs(title = "GREG Estimates of Tree Height using Crown Width",  x = "Tree Family", y="Estimate") +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size=8)) +
+  coord_flip()
 ```

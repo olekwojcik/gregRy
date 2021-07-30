@@ -1,12 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <!-- You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.  -->
 
 # gregRy
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 The goal of `gregRy` is to make the GREGORY estimator easily available
@@ -32,16 +30,41 @@ example utilizes the package
 
 ``` r
 library(gregRy)
-#load and wrangle data
+set.seed(13)
+# load and wrangle data
 
 # Overall dataset to create estimates with
 # Includes response variable and predictors
+
+# Filter data so there's no NA values for GREG/GREGORY
+family_filter_data <- get_pdxTrees_parks() %>%
+  as.data.frame() %>%
+  drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
+  filter(Condition != "Dead") %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>%
+  group_by(Family) %>%
+  summarize(count = n())
 
 dat <- get_pdxTrees_parks() %>%
   as.data.frame() %>%
   drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
   filter(Condition != "Dead") %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>% 
+  left_join(family_filter_data, by = "Family") %>%
+  filter(count > 4) %>%
   select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family)
+
+dat_s <- get_pdxTrees_parks() %>%
+  as.data.frame() %>%
+  drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
+  filter(Condition != "Dead") %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>%
+  left_join(family_filter_data, by = "Family") %>%
+  filter(count > 4) %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>%
+  group_by(Family) %>%
+  slice_sample(prop = 0.25) %>%
+  ungroup()
 
 dat_est <- dat %>%
   filter(Family == "Pinaceae")
@@ -96,89 +119,56 @@ The second dataset is the means of the predictors at the estimation
 level (Family estimates):
 
     #>          Family Crown_Width_NS
-    #> 1     Adoxaceae      20.000000
-    #> 2  Altingiaceae      40.604444
-    #> 3 Anacardiaceae      19.250000
-    #> 4 Aquifoliaceae      14.854167
-    #> 5    Araliaceae       9.000000
-    #> 6     Arecaceae       9.666667
+    #> 1  Altingiaceae       40.60444
+    #> 2 Anacardiaceae       19.25000
+    #> 3 Aquifoliaceae       14.85417
+    #> 4    Betulaceae       31.08437
+    #> 5  Bignoniaceae       31.54167
+    #> 6   Cannabaceae       35.12500
 
 The third dataset is contains both the resolution and estimation, with
 the proportion of resolution in the given estimation unit:
 
     #>   Condition        Family      prop
-    #> 1      Fair     Adoxaceae 1.0000000
-    #> 2      Fair  Altingiaceae 0.9066667
-    #> 3      Fair Anacardiaceae 0.7500000
-    #> 4      Fair Aquifoliaceae 0.8750000
-    #> 5      Fair    Araliaceae 1.0000000
-    #> 6      Fair     Arecaceae 1.0000000
+    #> 1      Fair  Altingiaceae 0.9066667
+    #> 2      Fair Anacardiaceae 0.7500000
+    #> 3      Fair Aquifoliaceae 0.8750000
+    #> 4      Fair    Betulaceae 0.8298755
+    #> 5      Fair  Bignoniaceae 0.7916667
+    #> 6      Fair   Cannabaceae 0.8125000
 
-``` r
-# Create GREGORY estimates
-x1 <- gregory_all(plot_df = dat %>% drop_na(),
-            resolution = "Condition",
-            estimation = "Family",
-            pixel_estimation_means = dat_x_bar_new,
-            proportions = dat_prop,
-            formula = Tree_Height ~ Crown_Width_NS,
-            prop = "prop")
-print(x1)
-#> # A tibble: 51 x 2
-#>    Family         estimate
-#>    <chr>             <dbl>
-#>  1 Adoxaceae          30  
-#>  2 Altingiaceae       67.5
-#>  3 Anacardiaceae      19.2
-#>  4 Aquifoliaceae      24.5
-#>  5 Araliaceae         10  
-#>  6 Arecaceae          22  
-#>  7 Betulaceae         44.5
-#>  8 Bignoniaceae       45.5
-#>  9 Cannabaceae        39.4
-#> 10 Caprifoliaceae     19  
-#> # ... with 41 more rows
-```
-
-``` r
-ggplot(x1, aes(x=estimate)) + 
-  geom_histogram(color="black", fill="white") + 
-  xlim("Estimate") + 
-  labs(title = "GREGORY Estimates of Tree Height using Crown Width")
-```
+    #> # A tibble: 36 x 2
+    #>    Family            estimate
+    #>    <chr>                <dbl>
+    #>  1 Altingiaceae          68.8
+    #>  2 Anacardiaceae         16.8
+    #>  3 Aquifoliaceae         25.6
+    #>  4 Betulaceae            43.9
+    #>  5 Bignoniaceae          49.4
+    #>  6 Cannabaceae           35.9
+    #>  7 Cercidiphyllaceae     23.3
+    #>  8 Cornaceae             23.9
+    #>  9 Cupressaceae          54.1
+    #> 10 Ebenaceae             26.3
+    #> # ... with 26 more rows
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
 
 ### GREG
 
-``` r
-# Create GREG estimates
-x2 <- greg_all(plot_df = dat %>% drop_na(),
-         estimation = "Family",
-         pixel_estimation_means = dat_x_bar_new,
-         formula = Tree_Height ~ Crown_Width_NS)
-print(x2)
-#> # A tibble: 51 x 2
-#>    Family         estimate
-#>    <chr>             <dbl>
-#>  1 Adoxaceae          30  
-#>  2 Altingiaceae       67.5
-#>  3 Anacardiaceae      19.2
-#>  4 Aquifoliaceae      24.5
-#>  5 Araliaceae         10  
-#>  6 Arecaceae          22  
-#>  7 Betulaceae         44.5
-#>  8 Bignoniaceae       45.5
-#>  9 Cannabaceae        39.4
-#> 10 Caprifoliaceae     19  
-#> # ... with 41 more rows
-```
-
-``` r
-ggplot(x2, aes(x=estimate)) + 
-  geom_histogram(color="black", fill="white") + 
-  xlim("Estimate") + 
-  labs(title = "GREG Estimates of Tree Height using Crown Width")
-```
+    #> # A tibble: 36 x 2
+    #>    Family            estimate
+    #>    <chr>                <dbl>
+    #>  1 Altingiaceae          69.0
+    #>  2 Anacardiaceae         16.5
+    #>  3 Aquifoliaceae         25.6
+    #>  4 Betulaceae            44.0
+    #>  5 Bignoniaceae          49.6
+    #>  6 Cannabaceae           36.6
+    #>  7 Cercidiphyllaceae     22.6
+    #>  8 Cornaceae             23.9
+    #>  9 Cupressaceae          53.9
+    #> 10 Ebenaceae             13  
+    #> # ... with 26 more rows
 
 <img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
