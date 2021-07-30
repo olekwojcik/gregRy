@@ -121,20 +121,20 @@ greg_all <- function(plot_df,
   
   #now combine with betas
   
-  term_df <- left_join(betas, N_df, by = c(estimation, "variable"))
+  term_df <- dplyr::left_join(betas, N_df, by = c(estimation, "variable"))
   
   #now let's get the N means
   
   n_df <- plot_df %>%
     dplyr::group_by(.data[[estimation]]) %>%
-    dplyr::summarize(across(predictors, mean), .groups = 'drop') %>%
+    dplyr::summarize(dplyr::across(predictors, mean), .groups = 'drop') %>%
     tidyr::pivot_longer(!.data[[estimation]],
                         names_to = "variable",
                         values_to = "mean_n")
   
   #then join N to the term_df
   
-  term_df <- left_join(term_df, n_df, by = c(estimation, "variable"))
+  term_df <- dplyr::left_join(term_df, n_df, by = c(estimation, "variable"))
   
   #replace na's from join (intercept) with 1's
   
