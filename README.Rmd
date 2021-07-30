@@ -138,7 +138,7 @@ The third dataset is contains both the resolution and estimation, with the propo
 print(head(as.data.frame(dat_prop)))
 ```
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+```{r, warning=FALSE, message=FALSE}
 # Create GREGORY estimates
 x1 <- gregory_all(plot_df = dat_s %>% drop_na(),
             resolution = "Condition",
@@ -161,7 +161,7 @@ ggplot(data = x1, aes(y = estimate, x=Family)) +
 
 ### GREG
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+```{r, warning=FALSE, message=FALSE}
 # Create GREG estimates
 x2 <- greg_all(plot_df = dat_s %>% drop_na(),
          estimation = "Family",

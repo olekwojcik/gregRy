@@ -137,38 +137,57 @@ the proportion of resolution in the given estimation unit:
     #> 5      Fair  Bignoniaceae 0.7916667
     #> 6      Fair   Cannabaceae 0.8125000
 
-    #> # A tibble: 36 x 2
-    #>    Family            estimate
-    #>    <chr>                <dbl>
-    #>  1 Altingiaceae          68.8
-    #>  2 Anacardiaceae         16.8
-    #>  3 Aquifoliaceae         25.6
-    #>  4 Betulaceae            43.9
-    #>  5 Bignoniaceae          49.4
-    #>  6 Cannabaceae           35.9
-    #>  7 Cercidiphyllaceae     23.3
-    #>  8 Cornaceae             23.9
-    #>  9 Cupressaceae          54.1
-    #> 10 Ebenaceae             26.3
-    #> # ... with 26 more rows
+``` r
+# Create GREGORY estimates
+x1 <- gregory_all(plot_df = dat_s %>% drop_na(),
+            resolution = "Condition",
+            estimation = "Family",
+            pixel_estimation_means = dat_x_bar_new,
+            proportions = dat_prop,
+            formula = Tree_Height ~ Crown_Width_NS,
+            prop = "prop")
+print(x1)
+#> # A tibble: 36 x 2
+#>    Family            estimate
+#>    <chr>                <dbl>
+#>  1 Altingiaceae          68.8
+#>  2 Anacardiaceae         16.8
+#>  3 Aquifoliaceae         25.6
+#>  4 Betulaceae            43.9
+#>  5 Bignoniaceae          49.4
+#>  6 Cannabaceae           35.9
+#>  7 Cercidiphyllaceae     23.3
+#>  8 Cornaceae             23.9
+#>  9 Cupressaceae          54.1
+#> 10 Ebenaceae             26.3
+#> # ... with 26 more rows
+```
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
 
 ### GREG
 
-    #> # A tibble: 36 x 2
-    #>    Family            estimate
-    #>    <chr>                <dbl>
-    #>  1 Altingiaceae          69.0
-    #>  2 Anacardiaceae         16.5
-    #>  3 Aquifoliaceae         25.6
-    #>  4 Betulaceae            44.0
-    #>  5 Bignoniaceae          49.6
-    #>  6 Cannabaceae           36.6
-    #>  7 Cercidiphyllaceae     22.6
-    #>  8 Cornaceae             23.9
-    #>  9 Cupressaceae          53.9
-    #> 10 Ebenaceae             13  
-    #> # ... with 26 more rows
+``` r
+# Create GREG estimates
+x2 <- greg_all(plot_df = dat_s %>% drop_na(),
+         estimation = "Family",
+         pixel_estimation_means = dat_x_bar_new,
+         formula = Tree_Height ~ Crown_Width_NS)
+print(x2)
+#> # A tibble: 36 x 2
+#>    Family            estimate
+#>    <chr>                <dbl>
+#>  1 Altingiaceae          69.0
+#>  2 Anacardiaceae         16.5
+#>  3 Aquifoliaceae         25.6
+#>  4 Betulaceae            44.0
+#>  5 Bignoniaceae          49.6
+#>  6 Cannabaceae           36.6
+#>  7 Cercidiphyllaceae     22.6
+#>  8 Cornaceae             23.9
+#>  9 Cupressaceae          53.9
+#> 10 Ebenaceae             13  
+#> # ... with 26 more rows
+```
 
 <img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
