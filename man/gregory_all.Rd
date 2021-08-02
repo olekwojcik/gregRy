@@ -50,7 +50,8 @@ planet_plot_data <- data.frame(plot_number = 1:20,
                                eco_province = c("forest", "swamp", "forest", "forest", "forest",
                                                 "forest", "forest", "forest", "grassland", "forest",
                                                 "forest", "swamp", "swamp", "grassland", "swamp",
-                                                "forest", "grassland", "grassland", "swamp", "swamp"))
+                                                "forest", "grassland", "grassland",
+                                                "swamp", "swamp"))
 
 #create mean data
 planet_means <- data.frame(planet = c("Kashyyyk",
