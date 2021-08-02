@@ -1,10 +1,10 @@
-Package: gregRy
+Package: 'gregRy'
 Type: Package
 Title: GREGORY Estimation
 Version: 0.1.0
 Author: Olek Wojcik, Sam Olson
 Maintainer: Olek Wojcik <olkowaty@gmail.com>
-Description: The goal of gregRy is to make the GREGORY estimator easily available to use.
+Description: The goal of 'gregRy' is to make the GREGORY estimator easily available to use.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Imports: dplyr, purrr, tidyr, magrittr
