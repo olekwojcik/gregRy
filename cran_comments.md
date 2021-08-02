@@ -6,3 +6,5 @@ There were no ERRORs, WARNINGs, or NOTES.
 
 ## Downstream dependencies
 This package depends on dplyr, purrr, tidyr, and magrittr.
+
+## Notes

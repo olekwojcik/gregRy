@@ -7,7 +7,6 @@ Maintainer: Olek Wojcik <olkowaty@gmail.com>
 Description: The goal of gregRy is to make the GREGORY estimator easily available to use.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Imports: dplyr, purrr, tidyr, magrittr
 RoxygenNote: 7.1.1
 Suggests: 
