@@ -11,3 +11,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: dplyr, purrr, tidyr, magrittr
 RoxygenNote: 7.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

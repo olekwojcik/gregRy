@@ -1,0 +1,185 @@
+---
+title: "my-vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{my-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# gregRy
+
+The goal of `gregRy` is to make the GREGORY estimator easily available to use. 
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)
+library(pdxTrees)
+library(ggplot2)
+```
+
+## Installation
+
+The development version of `gregRy` is available from [GitHub](https://github.com/) with:
+
+```{r, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("olekwojcik/gregRy")
+```
+
+## Example Computations
+
+The package `gregRy` does not contain a dataset, which is why our example utilizes the package [pdxTrees](https://github.com/mcconvil/pdxTrees)
+
+### GREGORY
+
+```{r, warning=FALSE, message=FALSE}
+library(gregRy)
+set.seed(13)
+# load and wrangle data
+
+# Overall dataset to create estimates with
+# Includes response variable and predictors
+
+# Filter data so there's no NA values for GREG/GREGORY
+family_filter_data <- get_pdxTrees_parks() %>%
+  as.data.frame() %>%
+  drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
+  filter(Condition != "Dead") %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>%
+  group_by(Family) %>%
+  summarize(count = n())
+
+dat <- get_pdxTrees_parks() %>%
+  as.data.frame() %>%
+  drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
+  filter(Condition != "Dead") %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>% 
+  left_join(family_filter_data, by = "Family") %>%
+  filter(count > 4) %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family)
+
+dat_s <- get_pdxTrees_parks() %>%
+  as.data.frame() %>%
+  drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
+  filter(Condition != "Dead") %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>%
+  left_join(family_filter_data, by = "Family") %>%
+  filter(count > 4) %>%
+  select(UserID, Tree_Height, Crown_Width_NS, DBH, Condition, Family) %>%
+  group_by(Family) %>%
+  slice_sample(prop = 0.25) %>%
+  ungroup()
+
+dat_est <- dat %>%
+  filter(Family == "Pinaceae")
+predictors <- c("Crown_Width_NS", "DBH")
+
+dat_x_bar <- dat %>%
+  dplyr::group_by(Family) %>%
+  dplyr::summarize(dplyr::across(predictors,
+                                mean)) %>%
+  tidyr::pivot_longer(!Family,
+                            names_to = "variable",
+                            values_to = "mean")
+dat_count_est <- dat %>%
+  group_by(Family) %>%
+  summarize(count = n())
+
+# Create dataset of proportions using estimation and resolution
+
+dat_prop <- left_join(dat, dat_count_est, by = "Family") %>%
+  group_by(Condition, Family) %>%
+  summarize(prop = n()/count) %>%
+  distinct() %>%
+  ungroup()
+
+# Create dataset of means of 'pixel' data
+
+dat_x_means <- get_pdxTrees_parks() %>%
+  as.data.frame() %>%
+  drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
+  dplyr::summarize(DBH = mean(DBH), Crown_Width_NS = mean(Crown_Width_NS),
+            Tree_Height = mean(Tree_Height))
+
+dat_x_bar_new <- dat_x_bar %>%
+  filter(variable == "Crown_Width_NS") %>%
+  mutate(Crown_Width_NS = mean) %>%
+  select(Family, Crown_Width_NS)
+```
+
+To use GREGORY, we need 3 different datasets. 
+
+The first dataset is the overall data:
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+print(head(dat))
+```
+
+The second dataset is the means of the predictors at the estimation level (Family estimates):
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+print(head(as.data.frame(dat_x_bar_new)))
+```
+
+The third dataset is contains both the resolution and estimation, with the proportion of resolution in the given estimation unit:
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+print(head(as.data.frame(dat_prop)))
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+# Create GREGORY estimates
+x1 <- gregory_all(plot_df = dat_s %>% drop_na(),
+            resolution = "Condition",
+            estimation = "Family",
+            pixel_estimation_means = dat_x_bar_new,
+            proportions = dat_prop,
+            formula = Tree_Height ~ Crown_Width_NS,
+            prop = "prop")
+print(x1)
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(data = x1, aes(y = estimate, x=Family)) +
+  geom_col(fill="steel blue") + 
+  labs(title = "GREGORY Estimates of Tree Height using Crown Width", x = "Tree Family", y="Estimate") + 
+  coord_flip() + 
+  theme_minimal() +
+  theme(axis.text.y = element_text(size=8))
+```
+
+### GREG
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+# Create GREG estimates
+x2 <- greg_all(plot_df = dat_s %>% drop_na(),
+         estimation = "Family",
+         pixel_estimation_means = dat_x_bar_new,
+         formula = Tree_Height ~ Crown_Width_NS)
+print(x2)
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(x2, aes(y = estimate, x=Family)) + 
+  geom_col(fill="steel blue") +
+  labs(title = "GREG Estimates of Tree Height using Crown Width",  x = "Tree Family", y="Estimate") +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size=8)) +
+  coord_flip()
+```

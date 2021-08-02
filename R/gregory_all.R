@@ -11,6 +11,7 @@
 #' @keywords forest
 #' @importFrom  magrittr %>%
 #' @export
+#' @example R/examples/gregory_all_example.R
 
   
 gregory_all <- function(

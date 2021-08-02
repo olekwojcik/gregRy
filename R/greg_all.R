@@ -1,12 +1,13 @@
 #' greg_all
 #'
-#' This function runs the Generalized Regression Operating on Resolutions of Y estimator, also know as GREGORY, on a set of data.
+#' This function runs the Generalized Regression estimator, also know as GREG, on a set of data.
 #' @param plot_df A data frame containing the response variable, predictors, estimation unit, and resolution unit for each "plot"
 #' @param estimation A character specifying the estimation column name within the other dataframes
 #' @param pixel_estimation_means A dataframe with a column for the estimation unit and a column for the mean response variable value per that estimation unit
 #' @param formula Formula to be used for the model, names should be consistent with the column names in plot_df and pixel_estimation_means
 #' @keywords forest
 #' @export
+#' @example R/examples/greg_all_example.R
 
 greg_all <- function(plot_df,
                      estimation,
