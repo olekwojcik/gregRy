@@ -8,6 +8,7 @@
 #' @keywords forest
 #' @export
 #' @example R/examples/greg_all_example.R
+#' @return A data frame with each row representing each estimation unit and its estimate.
 
 greg_all <- function(plot_df,
                      estimation,

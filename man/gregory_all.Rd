@@ -29,6 +29,9 @@ gregory_all(
 
 \item{prop}{A character specifying the column name of the proportion found in proportions}
 }
+\value{
+A data frame with each row representing each estimation unit and its estimate.
+}
 \description{
 This function runs the Generalized Regression Operating on Resolutions of Y estimator, also know as GREGORY, on a set of data.
 }

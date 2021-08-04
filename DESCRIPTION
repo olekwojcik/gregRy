@@ -2,8 +2,9 @@ Package: gregRy
 Type: Package
 Title: GREGORY Estimation
 Version: 0.1.0
-Author: Olek Wojcik, Sam Olson
-Maintainer: Olek Wojcik <olkowaty@gmail.com>
+Authors@R: c(
+    person("Olek", "Wojcik", email = "olkowaty@gmail.com", role = "cre"),
+    person("Sam", "Olson", email = "samuel.david.olson@gmail.com", role = "aut"))
 Description: The goal of 'gregRy' is to make the GREGORY estimator easily available to use.
 License: MIT + file LICENSE
 Encoding: UTF-8

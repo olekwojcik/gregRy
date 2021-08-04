@@ -12,6 +12,7 @@
 #' @importFrom  magrittr %>%
 #' @export
 #' @example R/examples/gregory_all_example.R
+#' @return A data frame with each row representing each estimation unit and its estimate.
 
   
 gregory_all <- function(
