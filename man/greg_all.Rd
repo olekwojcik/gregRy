@@ -16,7 +16,7 @@ greg_all(plot_df, estimation, pixel_estimation_means, formula)
 \item{formula}{Formula to be used for the model, names should be consistent with the column names in plot_df and pixel_estimation_means}
 }
 \value{
-A data frame with each row representing each estimation unit and its estimate.
+A dataframe with each row representing each estimation unit and its estimate.
 }
 \description{
 This function runs the Generalized Regression estimator, also know as GREG, on a set of data.
