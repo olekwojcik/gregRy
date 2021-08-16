@@ -8,7 +8,7 @@
 #' @keywords forest
 #' @export
 #' @example R/examples/greg_all_example.R
-#' @return A dataframe with each row representing each estimation unit and its estimate.
+#' @return A dataframe with each row representing each estimation unit, its estimate, and its estimated variance.
 
 greg_all <- function(plot_df,
                      estimation,
@@ -167,6 +167,21 @@ greg_all <- function(plot_df,
   result <- dplyr::left_join(term_df, y_bar_df, by = estimation) %>%
     dplyr::mutate(estimate = y_bar + term) %>%
     dplyr::select(.data[[estimation]], estimate)
+  
+  #add in variance estimator
+  
+  response <- all.vars(formula)[1]
+  
+  var_result <- plot_df %>%
+    dplyr::group_by(.data[[estimation]]) %>%
+    dplyr::summarize(variance = var(.data[[response]]),
+                     .groups = "drop")
+  
+  #combine
+  
+  result <- result %>%
+    dplyr::left_join(var_result, var_result,
+                     by = estimation)
   
   return(result)
 }
