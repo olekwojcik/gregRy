@@ -232,7 +232,7 @@ gregory_all <- function(
   
   var_result <- plot_df %>%
     dplyr::group_by(.data[[estimation]]) %>%
-    dplyr::summarize(variance = var(.data[[response]]),
+    dplyr::summarize(variance = stats::var(.data[[response]]),
                      .groups = "drop")
   
   #combine
