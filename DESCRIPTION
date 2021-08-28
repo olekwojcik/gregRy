@@ -5,8 +5,8 @@ Version: 0.1.0
 Authors@R: c(
     person("Olek", "Wojcik", email = "olkowaty@gmail.com", role = c("cre", "aut")),
     person("Sam", "Olson", email = "samuel.david.olson@gmail.com", role = "aut"))
-Description: This package contains functions which make using the Generalized Regression Estimator(GREG)
-    (J.N.K. Rao, Isabel Molina, 2015 <doi:10.3390/f11020244>) 
+Description: Functions which make using the Generalized Regression Estimator(GREG)
+    J.N.K. Rao, Isabel Molina, (2015) <doi:10.3390/f11020244> 
     and the Generalized Regression Estimator Operating on Resolutions of Y (GREGORY) easier. 
     The functions are designed to work well within a forestry context, and estimate multiple 
     estimation units at once. Compared to other survey estimation packages, this function has greater flexibility when 
