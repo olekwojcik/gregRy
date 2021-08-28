@@ -8,6 +8,4 @@ There were no ERRORs, WARNINGs, or NOTES.
 This package depends on dplyr, purrr, tidyr, and magrittr.
 
 ## Notes
-"Non-standard files/directories found at top level" These files are just our Readme and our license.
-
-"Possibly mis-spelled words in DESCRIPTION" gregRy is the name of the package. 
+A reference to GREGORY's methods will get added later, as the paper describing it is currently in press.
