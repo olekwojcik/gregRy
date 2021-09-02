@@ -51,7 +51,7 @@ set.seed(13)
 # Overall dataset to create estimates with
 # Includes response variable and predictors
 
-# Filter data so there's no NA values for GREG/GREGORY
+
 family_filter_data <- get_pdxTrees_parks() %>%
   as.data.frame() %>%
   drop_na(DBH, Crown_Width_NS, Tree_Height) %>%
@@ -86,12 +86,13 @@ dat_est <- dat %>%
 predictors <- c("Crown_Width_NS", "DBH")
 
 dat_x_bar <- dat %>%
-  dplyr::group_by(Family) %>%
-  dplyr::summarize(dplyr::across(predictors,
-                                mean)) %>%
-  tidyr::pivot_longer(!Family,
-                            names_to = "variable",
-                            values_to = "mean")
+  group_by(Family) %>%
+  summarize(across(predictors,
+                   mean)) %>%
+  pivot_longer(!Family,
+               names_to = "variable",
+               values_to = "mean")
+
 dat_count_est <- dat %>%
   group_by(Family) %>%
   summarize(count = n())
