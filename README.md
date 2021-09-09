@@ -14,6 +14,12 @@ to use.
 
 ## Installation
 
+`gregRy` can be installed from CRAN with:
+
+``` r
+install.packages("gregRy")
+```
+
 The development version of `gregRy` is available from
 [GitHub](https://github.com/) with:
 
@@ -166,7 +172,7 @@ print(x1)
 #> # ... with 26 more rows
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
 ### GREG
 
@@ -193,4 +199,4 @@ print(x2)
 #> # ... with 26 more rows
 ```
 
-<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />

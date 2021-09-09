@@ -30,6 +30,13 @@ library(ggplot2)
 
 ## Installation
 
+`gregRy` can be installed from CRAN with:
+
+```{r, eval = FALSE}
+install.packages("gregRy")
+```
+
+
 The development version of `gregRy` is available from [GitHub](https://github.com/) with:
 
 ```{r, eval=FALSE}
